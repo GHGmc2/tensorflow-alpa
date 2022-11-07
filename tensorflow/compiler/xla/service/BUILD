@@ -7022,7 +7022,6 @@ xla_cc_test(
     ],
 )
 
-<<<<<<< HEAD
 xla_cc_binary(
     name = "xla_compile",
     srcs = ["xla_compile_main.cc"],
