@@ -2772,6 +2772,9 @@ cc_library(
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
         "@com_google_absl//absl/strings",
+
+        # Added by Alpa
+        ":pass_context",
     ],
 )
 
@@ -7019,6 +7022,7 @@ xla_cc_test(
     ],
 )
 
+<<<<<<< HEAD
 xla_cc_binary(
     name = "xla_compile",
     srcs = ["xla_compile_main.cc"],
@@ -7172,4 +7176,21 @@ xla_cc_test(
         "//tensorflow/tsl/platform:statusor",
         "//tensorflow/tsl/platform:test",
     ]),
+)
+
+cc_library(
+    name = "pass_context",
+    srcs = [
+        "pass_context.cc",
+    ],
+    hdrs = [
+        "pass_context.h",
+    ],
+    deps = [
+        "//tensorflow/compiler/xla:types",
+        "//tensorflow/compiler/xla:util",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/types:any",
+        "@pybind11",
+    ],
 )
