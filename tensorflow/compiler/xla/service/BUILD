@@ -2775,6 +2775,7 @@ cc_library(
 
         # Added by Alpa
         ":pass_context",
+        "//tensorflow/compiler/xla/service/spmd:grad_acc_rewrite",
     ],
 )
 
