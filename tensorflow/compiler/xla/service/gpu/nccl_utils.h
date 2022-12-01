@@ -119,6 +119,7 @@ class Lockable {
 TSL_LIB_GTL_DEFINE_INT_TYPE(OpId, int64_t);
 
 struct NcclComm : public Lockable<ncclComm_t> {
+  // TODO(Maozhou): to confirm
   explicit NcclComm(ncclComm_t comm) : Lockable(comm) {}
 };
 
