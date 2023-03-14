@@ -367,9 +367,11 @@ static absl::Status AllReduceImplCommon(
 
   auto device_buffers = GetDeviceBufferPairs(args);
   if (!device_buffers.ok()) return ToAbslStatus(device_buffers.status());
-
-  return ToAbslStatus(RunAllReduce(static_cast<ReductionKind>(reduction_kind),
-                                   *device_buffers, *stream, **comm));
+  
+  // FIXME(Maozhou):
+  LOG(FATAL) << "Not Implemented Error";
+  // return ToAbslStatus(RunAllReduce(static_cast<ReductionKind>(reduction_kind),
+  //                                  *device_buffers, *stream, **comm));
 }
 #endif  // XLA_ENABLE_XCCL
 

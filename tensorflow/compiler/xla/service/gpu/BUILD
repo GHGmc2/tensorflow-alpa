@@ -3193,7 +3193,7 @@ alias(
     actual = if_nccl(":_alpa_nccl_group_base", ":empty"),
 )
 
-tf_cuda_library(
+tsl_gpu_library(
     name = "_alpa_nccl_group_base",
     srcs = if_gpu_is_configured(["alpa_nccl_group_base.cc"]),
     hdrs = if_gpu_is_configured(["alpa_nccl_group_base.h"]),
@@ -3228,7 +3228,7 @@ cc_library(
     ],
     deps = [
         "//tensorflow/compiler/xla:status_macros",
-        "//tensorflow/stream_executor:event",
+        "//tensorflow/compiler/xla/stream_executor:event",
         "@com_google_absl//absl/container:flat_hash_map",
     ],
 )
@@ -3257,7 +3257,7 @@ cc_library(
         "common_computation_elimination.h",
     ],
     deps = [
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_pass",
     ],
 )
@@ -3273,7 +3273,7 @@ cc_library(
     deps = [
         ":backend_configs_cc",
         ":ir_emission_utils",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:pass_context",
         "//tensorflow/compiler/xla/service/spmd:auto_sharding",
     ],
@@ -3285,7 +3285,7 @@ cc_library(
     hdrs = ["done_event_insertion.h"],
     deps = [
         "//tensorflow/compiler/xla:shape_util",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_pass",
     ],
 )

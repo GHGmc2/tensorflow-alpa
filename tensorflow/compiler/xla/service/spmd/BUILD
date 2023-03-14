@@ -262,7 +262,7 @@ cc_library(
     deps = [
         "//tensorflow/compiler/xla:shape_util",
         "//tensorflow/compiler/xla/service:dump",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_creation_utils",
         "//tensorflow/compiler/xla/service:hlo_live_range",
         "//tensorflow/compiler/xla/service:hlo_memory_scheduler",
@@ -279,7 +279,7 @@ cc_library(
     hdrs = ["redundant_slice_eliminator.h"],
     deps = [
         "//tensorflow/compiler/xla:shape_util",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_dce",
         "//tensorflow/compiler/xla/service:hlo_pass",
     ],
@@ -291,7 +291,7 @@ cc_library(
     hdrs = ["grad_acc_rewrite.h"],
     deps = [
         "//tensorflow/compiler/xla:shape_util",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_pass",
         "//tensorflow/compiler/xla/service:pass_context",
         "//tensorflow/compiler/xla/service/spmd:spmd_partitioner",
@@ -305,7 +305,7 @@ cc_library(
     deps = [
         ":auto_sharding",
         "//tensorflow/compiler/xla:shape_util",
-        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/hlo/ir:hlo",
         "//tensorflow/compiler/xla/service:hlo_pass",
         "@pybind11",
     ],
@@ -334,7 +334,7 @@ cc_library(
         "//tensorflow/compiler/xla/service:gather_expander",
         "//tensorflow/compiler/xla/service:gather_simplifier",
         "//tensorflow/compiler/xla/service:hlo_constant_folding",
-        "//tensorflow/compiler/xla/service:hlo_constant_splitter",
+        "//tensorflow/compiler/xla/hlo/transforms:hlo_constant_splitter",
         "//tensorflow/compiler/xla/service:hlo_cse",
         "//tensorflow/compiler/xla/service:hlo_dce",
         "//tensorflow/compiler/xla/service:hlo_pass",

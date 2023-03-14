@@ -1,9 +1,9 @@
 #include "tensorflow/compiler/xla/service/gpu/done_event_insertion.h"
 
-#include "tensorflow/compiler/xla/service/hlo_casting_utils.h"
-#include "tensorflow/compiler/xla/service/hlo_instruction.h"
-#include "tensorflow/compiler/xla/service/hlo_instructions.h"
-#include "tensorflow/compiler/xla/service/hlo_opcode.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_casting_utils.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_instruction.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_instructions.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_opcode.h"
 
 namespace xla {
 namespace {
@@ -34,7 +34,7 @@ Status AddDoneEvent(HloInstruction* inst, size_t index, HloInstruction* root) {
       TF_RETURN_IF_ERROR(done_event->AddControlDependencyTo(root));
     }
   }
-  return Status::OK();
+  return Status();
 }
 };  // namespace
 

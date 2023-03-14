@@ -22,12 +22,12 @@
 #include "tensorflow/compiler/xla/service/gpu/gpu_conv_rewriter.h"
 #include "tensorflow/compiler/xla/service/gpu/gpu_shape_verifier.h"
 #include "tensorflow/compiler/xla/service/hlo_constant_folding.h"
-#include "tensorflow/compiler/xla/service/hlo_constant_splitter.h"
+#include "tensorflow/compiler/xla/hlo/transforms/hlo_constant_splitter.h"
 #include "tensorflow/compiler/xla/service/hlo_cse.h"
 #include "tensorflow/compiler/xla/service/hlo_dce.h"
 #include "tensorflow/compiler/xla/service/hlo_pass_fix.h"
 #include "tensorflow/compiler/xla/service/hlo_pass_pipeline.h"
-#include "tensorflow/compiler/xla/service/hlo_sharding_metadata.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_sharding_metadata.h"
 #include "tensorflow/compiler/xla/service/hlo_verifier.h"
 #include "tensorflow/compiler/xla/service/reshape_mover.h"
 #include "tensorflow/compiler/xla/service/scatter_expander.h"
@@ -175,7 +175,8 @@ Status RunAutoShardingPass(HloModule* hlo_module,
       spmd_pipeline.AddPass<AutoSharding>();
       spmd_pipeline.AddPass<ShardingPropagation>(
           /*is_spmd=*/true, /*propagate_metadata=*/false,
-          /*allow_spmd_sharding_propagation_to_output=*/true);
+          // TODO(Maozhou): to confirm
+          hlo_module->config().allow_spmd_sharding_propagation_to_output());
       spmd_pipeline.AddPass<SliceAutoShardedStages>();
     } else {
       spmd_pipeline.AddPass<CallInliner>();
@@ -204,7 +205,8 @@ Status RunSpmdPartitionerPass(HloModule* hlo_module,
     if (num_partitions > 1) {
       spmd_pipeline.AddPass<ShardingPropagation>(
           /*is_spmd=*/true, /*propagate_metadata=*/false,
-          /*allow_spmd_sharding_propagation_to_output=*/true);
+          // TODO(Maozhou): to confirm
+          hlo_module->config().allow_spmd_sharding_propagation_to_output());
       spmd_pipeline.AddPass<StatefulRngSpmdPartitioner>(
           num_partitions, hlo_module->config().replica_count());
       spmd_pipeline.AddPass<RedundantSliceEliminator>();

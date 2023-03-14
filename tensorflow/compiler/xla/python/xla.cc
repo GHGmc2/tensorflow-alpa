@@ -186,7 +186,7 @@ PYBIND11_MODULE(xla_extension, m) {
                 dynamic_cast<xla::PjRtStreamExecutorClient*>(client);
 			CHECK(stream_client != nullptr);
             stream_client->device_state(device.local_hardware_id()).SetPrngSeed(seed);
-            return Status::OK();
+            return Status();
           })
       .def("memory_allocated", [](const PjRtDevice& device) {
             const int64_t invalid = -1;
@@ -243,7 +243,7 @@ PYBIND11_MODULE(xla_extension, m) {
              TF_ASSIGN_OR_RETURN(LocalDeviceState* local_device,
                                  stream_device->GetLocalDeviceState());
              local_device->SynchronizeAllActivity();
-             return Status::OK();
+             return Status();
            })
       .def("__str__", &PjRtDevice::DebugString)
       .def("__repr__", &PjRtDevice::ToString)
@@ -546,7 +546,7 @@ PYBIND11_MODULE(xla_extension, m) {
            })
        // Added by Alpa
       .def("total_allocation_size", [](PyLoadedExecutable* exec){
-             const PjRtLoadedExecutable* pjrt_executable = &exec->pjrt_executable();
+             const PjRtLoadedExecutable* pjrt_executable = exec->pjrt_executable();
              const PjRtStreamExecutorExecutable* stream_executable = dynamic_cast<const PjRtStreamExecutorExecutable*>(pjrt_executable);
              absl::Span<const std::shared_ptr<LocalExecutable>> local_executables =\
                  stream_executable->executables();

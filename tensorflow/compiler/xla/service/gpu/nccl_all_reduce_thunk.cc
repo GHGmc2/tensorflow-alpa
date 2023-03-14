@@ -283,8 +283,8 @@ Status NcclAllReduceThunkBase::RunAllReduce(const ExecuteParams& params,
       std::vector<DeviceBufferPair> device_buffers,
       ConvertToDeviceBuffers(params, buffers_,
                              config_.config.operand_element_type));
-  return ::xla::gpu::RunAllReduce(config_.reduction_kind, device_buffers,
-                                  stream, comm);
+  return ::xla::gpu::RunAllReduce(config_, device_buffers,
+                                  stream, comm, skip_env_name_);
 }
 
 NcclAllReduceThunk::NcclAllReduceThunk(ThunkInfo thunk_info,
@@ -311,7 +311,6 @@ CollectiveOpGroupMode NcclAllReduceThunk::GetGroupMode(
 
 Status NcclAllReduceThunk::RunNcclCollective(const ExecuteParams& params,
                                              ncclComm_t comm) {
-  // FIXME(Maozhou)
   return RunAllReduce(params, *params.stream, comm);
 }
 
@@ -342,7 +341,6 @@ Status NcclAllReduceStartThunk::RunNcclCollective(const ExecuteParams& params,
                                                   ncclComm_t comm) {
   return async_.Execute(
       [this](const ExecuteParams& params, se::Stream& stream, ncclComm_t comm) {
-        // FIXME(Maozhou)
         return RunAllReduce(params, stream, comm);
       },
       params, comm);

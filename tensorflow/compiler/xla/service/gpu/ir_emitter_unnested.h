@@ -33,6 +33,8 @@ limitations under the License.
 #include "tensorflow/compiler/xla/service/llvm_ir/ir_array.h"
 #include "tensorflow/compiler/xla/service/llvm_ir/llvm_util.h"
 
+#include "tensorflow/compiler/xla/service/gpu/custom_call_thunk.h"
+
 namespace xla {
 namespace gpu {
 

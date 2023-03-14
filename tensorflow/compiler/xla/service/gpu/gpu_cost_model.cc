@@ -3,8 +3,8 @@
 #include "tensorflow/compiler/xla/primitive_util.h"
 #include "tensorflow/compiler/xla/service/gpu/backend_configs.pb.h"
 #include "tensorflow/compiler/xla/service/gpu/cublas_cudnn.h"
-#include "tensorflow/compiler/xla/service/hlo_casting_utils.h"
-#include "tensorflow/compiler/xla/service/hlo_instructions.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_casting_utils.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_instructions.h"
 #include "tensorflow/compiler/xla/service/pass_context.h"
 #include "tensorflow/compiler/xla/service/spmd/auto_sharding_util.h"
 
@@ -322,7 +322,7 @@ double EstimateHloModuleCost(const HloModule* hlo_module) {
       const HloInstruction* lhs = ins->operand(0);
       const HloInstruction* rhs = ins->operand(1);
       std::vector<int64_t> lhs_space_dims, rhs_space_dims;
-      auto config = ins->backend_config<GemmBackendConfig>().ValueOrDie();
+      auto config = ins->backend_config<GemmBackendConfig>().value();
       auto dnum = config.dot_dimension_numbers();
       std::tie(lhs_space_dims, rhs_space_dims) =
           spmd::GetSpaceDims(lhs->shape(), rhs->shape(), dnum);

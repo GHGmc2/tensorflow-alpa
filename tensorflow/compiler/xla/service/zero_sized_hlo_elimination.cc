@@ -26,8 +26,8 @@ limitations under the License.
 #include "tensorflow/tsl/platform/status.h"
 
 // Added by alpa
-#include "tensorflow/compiler/xla/service/hlo_instructions.h"
-#include "tensorflow/compiler/xla/service/hlo_casting_utils.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_instructions.h"
+#include "tensorflow/compiler/xla/hlo/ir/hlo_casting_utils.h"
 
 namespace xla {
 
@@ -47,11 +47,10 @@ StatusOr<bool> ZeroSizedHloElimination::Run(
         std::vector<std::pair<ShapeIndex, std::pair<int64_t, ShapeIndex>>>
             aliasing;
 
-        ShapeUtil::VisitorFunction visitor = [&](const Shape& shape,
+        ShapeUtil::ForEachSubshape(instruction->shape(), [&](const Shape& shape,
                                                  const ShapeIndex& idx) {
           aliasing.push_back(std::make_pair(idx, std::make_pair(0, idx)));
-        };
-        ShapeUtil::ForEachSubshape(instruction->shape(), visitor);
+        });
         HloCustomCallInstruction* call = Cast<HloCustomCallInstruction>(instruction);
         call->set_output_to_operand_aliasing(aliasing);
       }
