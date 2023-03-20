@@ -468,6 +468,8 @@ tf_cuda_library(
         "@com_google_absl//absl/strings:str_format",
         "@com_google_absl//absl/synchronization",
         "@llvm-project//mlir:IR",
+        # Added by Alpa
+        ":alpa_nccl_group_base",
     ],
 )
 
@@ -578,6 +580,9 @@ cc_library(
         "replica_id_thunk.cc",
         "sequential_thunk.cc",
         "while_thunk.cc",
+        # Added by Alpa
+        "done_event_thunk.cc",
+        "rng_thunk.cc",
     ],
     hdrs = [
         "conditional_thunk.h",
@@ -594,6 +599,9 @@ cc_library(
         "replica_id_thunk.h",
         "sequential_thunk.h",
         "while_thunk.h",
+        # Added by Alpa
+        "done_event_thunk.h",
+        "rng_thunk.h",
     ],
     deps = [
         ":backend_configs_cc",
@@ -676,6 +684,8 @@ cc_library(
         "//tensorflow/tsl/platform:logging",
         "//tensorflow/tsl/platform:status",
         "//tensorflow/tsl/lib/gtl:map_util",
+        # Added by Alpa
+        ":alpa_event_manager",
     ] + if_gpu_is_configured([
         ":cholesky_thunk",
         ":precompiled_kernels",
@@ -1784,6 +1794,8 @@ cc_library(
         "@llvm-project//mlir:IR",
         "@llvm-project//mlir:Pass",
         "@llvm-project//mlir:Transforms",
+        # Added by Alpa
+        ":done_event_insertion",
     ],
 )
 
@@ -2963,4 +2975,107 @@ tf_cc_test(
         "//tensorflow/compiler/xla/tests:hlo_test_base",
         "//tensorflow/compiler/xla/tests:xla_internal_test_main",
     ],
+)
+
+# Added by Alpa
+alias(
+    name = "alpa_nccl_group_base",
+    actual = if_nccl(":_alpa_nccl_group_base", ":empty"),
+)
+
+tf_cuda_library(
+    name = "_alpa_nccl_group_base",
+    srcs = if_gpu_is_configured(["alpa_nccl_group_base.cc"]),
+    hdrs = if_gpu_is_configured(["alpa_nccl_group_base.h"]),
+    # Override tf_cuda_library()'s internal default value of ["//buildenv/target:gce"].
+    copts = [
+        "-fexceptions",
+        # "-fno-strict-aliasing",
+    ],
+    compatible_with = [],
+    defines = if_gpu_is_configured(["XLA_ENABLE_XCCL"]),
+    deps = [
+        ":alpa_event_manager",
+        "//tensorflow/compiler/xla/pjrt:pjrt_stream_executor_client",
+    ] + if_gpu_is_configured([
+        ":gpu_executable_run_options",
+        ":nccl_utils",
+        "//tensorflow/compiler/xla/stream_executor/gpu:gpu_stream",
+    ]) + if_cuda_is_configured([
+        "@local_config_nccl//:nccl",
+    ]) + if_rocm_is_configured([
+        "@local_config_rocm//rocm:rccl",
+    ]),
+)
+
+cc_library(
+    name = "alpa_event_manager",
+    srcs = [
+        "alpa_events.cc",
+    ],
+    hdrs = [
+        "alpa_events.h",
+    ],
+    deps = [
+        "//tensorflow/compiler/xla:status_macros",
+        "//tensorflow/stream_executor:event",
+        "@com_google_absl//absl/container:flat_hash_map",
+    ],
+)
+
+cc_library(
+    name = "alpa_nccl_wrapper",
+    srcs = [
+        "alpa_nccl_wrapper.cc",
+    ],
+    hdrs = [
+        "alpa_nccl_wrapper.h",
+    ],
+    defines = if_gpu_is_configured(["XLA_ENABLE_XCCL"]),
+    deps = [
+        "alpa_nccl_group_base",
+        "//tensorflow/compiler/xla/python:py_client",
+    ],
+)
+
+cc_library(
+    name = "common_computation_elimination",
+    srcs = [
+        "common_computation_elimination.cc",
+    ],
+    hdrs = [
+        "common_computation_elimination.h",
+    ],
+    deps = [
+        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/service:hlo_pass",
+    ],
+)
+
+cc_library(
+    name = "gpu_cost_model",
+    srcs = [
+        "gpu_cost_model.cc",
+    ],
+    hdrs = [
+        "gpu_cost_model.h",
+    ],
+    deps = [
+        ":backend_configs_cc",
+        ":ir_emission_utils",
+        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/service:pass_context",
+        "//tensorflow/compiler/xla/service/spmd:auto_sharding",
+    ],
+)
+
+cc_library(
+    name = "done_event_insertion", 
+    srcs = ["done_event_insertion.cc"], 
+    hdrs = ["done_event_insertion.h"], 
+    deps = [
+        "//tensorflow/compiler/xla:shape_util",
+        "//tensorflow/compiler/xla/service:hlo",
+        "//tensorflow/compiler/xla/service:hlo_pass",
+    ]
 )
